@@ -193,7 +193,7 @@ function BinaryFuseFilter(keys::Vector{UInt64}; seed = UInt64(0x726b2b9d438b9d4d
 				h012[4] = index1
 				h012[5] = h012[2]
 
-				other_index1 = h012[found + 2]
+				other_index1 = h012[found + 1]
 				alone[Qsize + 1] = other_index1
 				if (t2count[other_index1 + 1] >> 2) == 2
 					Qsize += 1
@@ -202,7 +202,7 @@ function BinaryFuseFilter(keys::Vector{UInt64}; seed = UInt64(0x726b2b9d438b9d4d
 				t2count[other_index1 + 1] ⊻= mod3(found + 1)
 				t2hash[other_index1 + 1] ⊻= hash
 
-				other_index2 = h012[found + 3]
+				other_index2 = h012[found + 2]
 				alone[Qsize + 1] = other_index2
 				if (t2count[other_index2 + 1] >> 2) == 2
 					Qsize += 1
@@ -242,7 +242,7 @@ function BinaryFuseFilter(keys::Vector{UInt64}; seed = UInt64(0x726b2b9d438b9d4d
 		h012[3] = index3
 		h012[4] = h012[1]
 		h012[5] = h012[2]
-		fingerprints[h012[found] + 1] = xor2 ⊻ fingerprints[h012[found + 1] + 1] ⊻ fingerprints[h012[found + 2] + 1]
+		fingerprints[h012[found + 1] + 1] = xor2 ⊻ fingerprints[h012[found + 2] + 1] ⊻ fingerprints[h012[found + 3] + 1]
 	end
 
 	return BinaryFuseFilter(
