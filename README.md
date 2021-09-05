@@ -1,23 +1,28 @@
-# Fast Aproximate Filters  
+## Fast Aproximate Filters  
 
 ## About
 
-Julia package build based of (https://github.com/FastFilter)[https://github.com/FastFilter].
-Currently only binary_fuse_8 is reimplemented. Feel free to make a PR with other implementations.
+Fast filters to check whether an element is in the set. These data structures are
+probabilistic, meaning they have certain probability for false positives, but 
+they are never wrong when item was actually in the initial set. What is more,
+space usage and speed of access is excellent for these data structures.
 
-## License  
+Julia package build based of (https://github.com/FastFilter/xor_singleheader/blob/master/include/binaryfusefilter.h)[https://github.com/FastFilter/xor_singleheader/blob/master/include/binaryfusefilter.h].
+Currently only binary fuse filters are re-implemented.  
+Feel free to make a PR with other implementations.
 
-Copyright (C) 2021  Kornel Labun
+## Citations
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published
-by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+If using this code for scientific settings please cite the relevant papers:
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
+* Thomas Mueller Graf,  Daniel Lemire, Binary Fuse Filters: Fast and Smaller Than Xor Filters (in preparation)
+* Thomas Mueller Graf,  Daniel Lemire, [Xor Filters: Faster and Smaller Than Bloom and Cuckoo Filters](https://arxiv.org/abs/1912.08258), Journal of Experimental Algorithmics 25 (1), 2020. DOI: 10.1145/3376122
 
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
+<img src="comparison.png" width="50%"/>
+
+## Usage
+
+```julia
+using FastFilter
+?BinaryFuseFilter
+```

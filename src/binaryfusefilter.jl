@@ -1,11 +1,11 @@
-struct BinaryFuseFilter
+struct BinaryFuseFilter{T <: Union{UInt8, UInt16, UInt32}}
     seed::UInt64
     segment_length::UInt32
     segment_length_mask::UInt32
     segment_count::UInt32
     segment_count_length::UInt32
 	array_length::UInt32
-    fingerprints::Vector{UInt8}
+    fingerprints::Vector{T}
     n_keys::UInt32
 end
 
@@ -49,11 +49,41 @@ function get_hash_from_hash(
 end
 
 
-function BinaryFuseFilter(
+"""
+`BinaryFuseFilter{T}(
 	keys::Vector{UInt64}; 
 	seed = UInt64(0x726b2b9d438b9d4d), 
-	max_iterations = 10)
-	
+	max_iterations = 10) where T <: Union{UInt8, UInt16, UInt32}`
+
+Build a binary fuse filter with T type fingerprints from
+keys in `keys`. 
+
+## Arguments
+
+`seed` is used as initial seed value, 
+which is iteratively changed during structure build step. 
+
+`max_iterations` restricts how many rounds of build step to try 
+before termination.
+
+# Examples
+```julia-repl
+julia> filter = BinaryFuseFilter{UInt8}(UInt64.[1:10])
+BinaryFuseFilter with 10 keys and seed 1198702242888554850.
+
+julia> UInt64(1) in filter
+true
+
+julia> UInt64(11) in filter
+false
+```
+
+"""
+function BinaryFuseFilter{T}(
+	keys::Vector{UInt64}; 
+	seed = UInt64(0x726b2b9d438b9d4d), 
+	max_iterations = 10) where T <: Union{UInt8, UInt16, UInt32}
+
 	n_keys = UInt32(length(keys))
 	if n_keys == 0
 		throw("No keys for construction.")
@@ -79,7 +109,7 @@ function BinaryFuseFilter(
 	array_length = (segment_count + arity - 1) * segment_length
 
 	segment_count_length = UInt32(segment_count * segment_length)
-	fingerprints = zeros(UInt8, array_length)
+	fingerprints = zeros(T, array_length)
 
 	# Adding elements
 	rngcounter = seed
@@ -218,10 +248,10 @@ function BinaryFuseFilter(
 		if stacksize == n_keys
 			break
 		end
-		for i in UInt32.(1:n_keys)
+		for i in 1:n_keys
 			reverseOrder[i] = 0
 		end
-		for i in UInt32(1:capacity)
+		for i in 1:capacity
 			t2count[i] = 0
 			t2hash[i] = 0
 		end
@@ -235,7 +265,7 @@ function BinaryFuseFilter(
 	for i in n_keys:-1:1
 		# the hash of the key we insert next
 		hash = reverseOrder[i]
-		xor2 = UInt8(fingerprint(hash))
+		xor2 = fingerprint(T, hash)
 		index1, index2, index3 = get_hash_from_hash(
 			hash, segment_count_length, segment_length, segment_length_mask)
 		found = reverseH[i]
@@ -247,7 +277,7 @@ function BinaryFuseFilter(
 		fingerprints[h012[found + 1] + 1] = xor2 ⊻ fingerprints[h012[found + 2] + 1] ⊻ fingerprints[h012[found + 3] + 1]
 	end
 
-	return BinaryFuseFilter(
+	return BinaryFuseFilter{T}(
 		seed,
 		segment_length, segment_length_mask,
     	segment_count, segment_count_length,
@@ -264,7 +294,7 @@ Base.show(io::IO, filter::BinaryFuseFilter) = summary(io, filter)
 
 function Base.in(key, filter::BinaryFuseFilter)
     hash = mixsplit(key, filter.seed)
-    f = UInt8(fingerprint(hash))
+    f = fingerprint(typeof(filter.fingerprints[1]), hash)
 	h0, h1, h2 = get_hash_from_hash(
 		hash, filter.segment_count_length, filter.segment_length, filter.segment_length_mask)
 	f ⊻= (filter.fingerprints[h0 + 1] ⊻ filter.fingerprints[h1 + 1] ⊻ filter.fingerprints[h2 + 1])

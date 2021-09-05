@@ -34,11 +34,22 @@ end
 
 
 # xor fold
-function fingerprint(hash::UInt64)
+@inline function fingerprint(::Type{UInt8}, hash::UInt64)
 	hash = (hash >> 32) ⊻ ((hash << 32) >> 32) # fold to 32 bits
 	hash = (hash >> 16) ⊻ ((hash << 48) >> 48) # fold to 16 bits
 	hash = (hash >> 8) ⊻ ((hash << 56) >> 56) # fold to 8 bits
 	return UInt8(hash)
+end
+
+@inline function fingerprint(::Type{UInt16}, hash::UInt64)
+	hash = (hash >> 32) ⊻ ((hash << 32) >> 32) # fold to 32 bits
+	hash = (hash >> 16) ⊻ ((hash << 48) >> 48) # fold to 16 bits
+	return UInt16(hash)
+end
+
+@inline function fingerprint(::Type{UInt32}, hash::UInt64)
+	hash = (hash >> 32) ⊻ ((hash << 32) >> 32) # fold to 32 bits
+	return UInt32(hash)
 end
 
 
