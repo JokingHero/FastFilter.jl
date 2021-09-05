@@ -1,4 +1,4 @@
-## Fast Aproximate Filters  
+## Fast Approximate Filters  
 
 ## About
 
