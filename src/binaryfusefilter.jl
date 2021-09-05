@@ -49,7 +49,11 @@ function get_hash_from_hash(
 end
 
 
-function BinaryFuseFilter(keys::Vector{UInt64}; seed = UInt64(0x726b2b9d438b9d4d), max_iterations = 100)
+function BinaryFuseFilter(
+	keys::Vector{UInt64}; 
+	seed = UInt64(0x726b2b9d438b9d4d), 
+	max_iterations = 10)
+	
 	n_keys = UInt32(length(keys))
 	if n_keys == 0
 		throw("No keys for construction.")
@@ -104,8 +108,6 @@ function BinaryFuseFilter(keys::Vector{UInt64}; seed = UInt64(0x726b2b9d438b9d4d
 
 	while true
 		iterations += 1
-		print(iterations)
-		print("\n")
 		if iterations > max_iterations
 			throw("Too many iterations, you probably have duplicate keys.")
 		end
@@ -168,7 +170,7 @@ function BinaryFuseFilter(keys::Vector{UInt64}; seed = UInt64(0x726b2b9d438b9d4d
 		# We scan the array of counters to identify the locations corresponding to a single set entry.
         # The entries are added to a stack. Since we scan forward, the later entries in the stack tend to
         # correspond to later locations.
-		for i in UInt32.(1:capacity) # capacity != alone size??...
+		for i in UInt32.(1:capacity)
 			alone[Qsize + 1] = i - 1
 			if (t2count[i] >> 2) == 1
 				Qsize += 1
@@ -188,10 +190,10 @@ function BinaryFuseFilter(keys::Vector{UInt64}; seed = UInt64(0x726b2b9d438b9d4d
 				index1, index2, index3 = get_hash_from_hash(
 					hash, segment_count_length, segment_length, segment_length_mask)
 
-				h012[2] = index2
-				h012[3] = index3
-				h012[4] = index1
-				h012[5] = h012[2]
+				h012[1] = index2
+				h012[2] = index3
+				h012[3] = index1
+				h012[4] = h012[1]
 
 				other_index1 = h012[found + 1]
 				alone[Qsize + 1] = other_index1
@@ -265,6 +267,6 @@ function Base.in(key, filter::BinaryFuseFilter)
     f = UInt8(fingerprint(hash))
 	h0, h1, h2 = get_hash_from_hash(
 		hash, filter.segment_count_length, filter.segment_length, filter.segment_length_mask)
-	f ⊻= (filter.fingerprints[h0] ⊻ filter.fingerprints[h1] ⊻ filter.fingerprints[h2])
+	f ⊻= (filter.fingerprints[h0 + 1] ⊻ filter.fingerprints[h1 + 1] ⊻ filter.fingerprints[h2 + 1])
 	return f == 0
 end
