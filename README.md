@@ -16,8 +16,8 @@ Feel free to make a PR with other implementations.
 
 If using this code for scientific settings please cite the relevant papers:
 
-* Thomas Mueller Graf,  Daniel Lemire, Binary Fuse Filters: Fast and Smaller Than Xor Filters (in preparation)
-* Thomas Mueller Graf,  Daniel Lemire, [Xor Filters: Faster and Smaller Than Bloom and Cuckoo Filters](https://arxiv.org/abs/1912.08258), Journal of Experimental Algorithmics 25 (1), 2020. DOI: 10.1145/3376122
+* Thomas Mueller Graf,  Daniel Lemire, [Binary Fuse Filters: Fast and Smaller Than Xor Filters](https://dl.acm.org/doi/abs/10.1145/3510449), ACM Journal of Experimental Algorithmics 27, 2022. DOI: 10.1145/3510449
+* Thomas Mueller Graf,  Daniel Lemire, [Xor Filters: Faster and Smaller Than Bloom and Cuckoo Filters](https://arxiv.org/abs/1912.08258), Journal of Experimental Algorithmics 25, 2020. DOI: 10.1145/3376122
 
 <img src="comparison.png" width="50%"/>
 

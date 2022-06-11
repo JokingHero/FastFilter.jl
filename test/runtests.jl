@@ -8,7 +8,7 @@ rng = MersenneTwister(42)
 
 for i in 1:length(utypes)
     @testset "binaryfusefilter.jl " begin
-        n = Int(1e5)
+        n = Int(230e6)
         items = rand(rng, UInt64, n)
         filter = BinaryFuseFilter{utypes[i]}(items)
     
