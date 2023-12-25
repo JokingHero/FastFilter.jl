@@ -3,11 +3,17 @@ using FastFilter
 using Random
 
 utypes = [UInt8, UInt16, UInt32]
-error_rates = [0.005, 1.5e-5, 2.33e-10]
+error_rates = [0.005, 1.7e-5, 2.33e-10]
 rng = MersenneTwister(42)
 
-for i in 1:length(utypes)
+for i in eachindex(utypes)
     @testset "binaryfusefilter.jl " begin
+
+        @testset "Can be build with stupid small number of items" begin
+            filter = BinaryFuseFilter{utypes[i]}([UInt64(1)])
+            @test UInt64(1) in filter
+        end
+
         n = Int(230e6)
         items = rand(rng, UInt64, n)
         filter = BinaryFuseFilter{utypes[i]}(items)

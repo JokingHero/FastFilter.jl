@@ -25,9 +25,9 @@ end
 
 function calculate_size_factor(arity::UInt32, n_keys::UInt32)
 	if arity == 3
-		return Float64(max(1.125, 0.875 + 0.25 * log(1000000)/log(Float64(n_keys))))
+		return Float64(max(1.125, 0.875 + 0.25 * log(1000000)/log(Float64(n_keys + 1))))
 	elseif arity == 4
-		return Float64(max(1.075, 0.77 + 0.305 * log(600000)/log(Float64(n_keys))))
+		return Float64(max(1.075, 0.77 + 0.305 * log(600000)/log(Float64(n_keys + 1))))
 	else
 		return Float64(2.0)
 	end
@@ -143,7 +143,7 @@ function BinaryFuseFilter{T}(
 		end
 
 		startPos = zeros(UInt32, block)
-		for i in 1:length(startPos)
+		for i in eachindex(startPos)
 			# important: we do not want i * n_keys to overflow!!!
 			# in java we have (int) ((long) i * size / block)
 			startPos[i] = UInt32(((UInt64(i - 1) * UInt64(n_keys)) >> blockBits))

@@ -8,7 +8,7 @@ they are never wrong when item was actually in the initial set. What is more,
 space usage and speed of access is excellent for these data structures. 
 
 This Julia package is based of [binaryfusefilter.h](https://github.com/FastFilter/xor_singleheader/blob/master/include/binaryfusefilter.h).
-Currently only binary fuse filters are re-implemented, but we support UInt8, UInt16 and UInt32 fingerprints.
+Currently, only binary fuse filters are re-implemented, but we support UInt8, UInt16 and UInt32 fingerprints.
 
 Feel free to make a PR with other implementations.
 
